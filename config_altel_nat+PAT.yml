@@ -1,7 +1,7 @@
 ---
 
 - name: Run commands
-  hosts: 10.100.171.1
+  hosts: routers
 # ignore_errors: yes
 
   tasks:
