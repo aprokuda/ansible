@@ -1,7 +1,7 @@
 ---
 
 - name: RUN
-  hosts: 10.102.240.1
+  hosts: routers
 
   tasks:
 
