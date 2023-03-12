@@ -1,0 +1,26 @@
+---
+
+- name: RUN
+  hosts: 10.102.240.1
+
+  tasks:
+
+
+    - name: run show ip access list
+      ios_command:
+         commands: show ip access-lists
+      register: ip_access_list_result      
+ 
+    
+
+    - name: Debug registered var
+      debug:
+        var: ip_access_list_result.stdout_lines[0]     
+
+
+     # ios_config:
+      #   parents:
+       #    - ip access-list extended FIREWALL
+        # lines:
+         #  - 2 permit tcp host 1.1.1.1 eq www host 2.2.2.2
+      #when: "'FIREWALL-1' in ip_access_list_result.stdout[0]"

@@ -1,0 +1,16 @@
+---
+
+- name: Run cfg switch
+  hosts: switch
+
+  tasks:
+
+    - name: VTP config add
+      ios_config:
+         lines:
+           - vtp domain mcorp
+           - vtp version 3
+           - vtp mode client
+
+
+

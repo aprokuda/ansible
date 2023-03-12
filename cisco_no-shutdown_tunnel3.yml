@@ -1,0 +1,21 @@
+---
+
+- name: Run cfg commands on routers
+  hosts: Tunnel3-Down
+
+  tasks:
+
+
+
+    - name: Interface Tunnel3 no Shutdown
+      ios_config:
+         parents:
+           - interface Tunnel3
+         lines:
+           - no shutdown
+
+    - name: save config
+      ios_command:
+         commands:
+           - write
+

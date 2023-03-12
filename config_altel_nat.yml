@@ -1,0 +1,98 @@
+---
+
+- name: Run commands
+  hosts: 10.100.100.1
+
+  tasks:
+
+    - name: Facts
+      ios_facts:
+         gather_subset: all
+         # - interfaces
+
+   # - name: Debug
+    #  debug: var=ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address']
+
+    - name: ip nat enable interface Tunnel2
+      ios_config:
+         parents:
+           - interface Tunnel2 
+         lines:
+           - ip nat enable
+
+    - name: ip nat enable interface Tunnel3
+      ios_config:
+         parents:
+           - interface Tunnel3
+         lines:
+           - ip nat enable
+
+    - name: ip nat enable interface Vlan1
+      ios_config:
+         parents:
+           - interface Vlan1
+         lines:
+           - ip nat enable
+
+
+    - name: ip nat enable interface FastEthernet8
+      ios_config:
+         parents:
+           - interface FastEthernet8
+         lines:
+           - ip nat enable
+      when: "'FastEthernet8   192.168.8.10' in sh_ip.stdout[0]"
+
+
+
+    - name: ip nat source static
+      ios_config:
+         lines:
+           - ip nat source static tcp 192.168.8.8 80 {{ ansible_net_interfaces['Vlan1']['ipv4'][0]['address'] }} 80 extendable
+           - ip nat source list ALTEL-NAT pool ALTEL-PAT overload
+           - ip nat pool ALTEL-PAT 192.168.8.200 192.168.8.200 prefix-length 24
+  
+    - name: ip nat access-list ALTEL-NAT 
+      ios_config:
+         parents:
+           - ip access-list extended ALTEL-NAT
+         lines:
+           - permit tcp any host {{ ansible_net_interfaces['Vlan1']['ipv4'][0]['address'] }} eq www
+
+    
+
+    - name: ip access-list FIREWALL-ISP1
+      ios_config:
+         parents:
+           - ip access-list extended FIREWALL-ISP1
+         lines:
+           - 1 permit tcp host 192.168.8.8 eq www host 192.168.8.200
+      when: "'GigabitEthernet0/0/0   192.168.8.10' in sh_ip.stdout[0]"
+
+
+       
+    - name: ip access-list FIREWALL-ISP2
+      ios_config:
+         parents:
+           - ip access-list extended FIREWALL-ISP2
+         lines:
+           - 1 permit tcp host 192.168.8.8 eq www host 192.168.8.200
+      when: "'GigabitEthernet0/0/1   192.168.8.10' in sh_ip.stdout[0]"
+
+     
+
+    - name: ip access-list FIREWALL
+      ios_config:
+         parents:
+           - ip access-list extended FIREWALL
+         lines:
+           - 1 permit tcp host 192.168.8.8 eq www host 192.168.8.200
+   
+
+ 
+   #- name: save config
+   #  ios_command:
+   #     commands:
+   #       - write
+
+# {{ ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address']

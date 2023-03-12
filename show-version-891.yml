@@ -1,0 +1,19 @@
+---
+
+- name: RUN
+  hosts: cisco
+ 
+
+  tasks:
+     
+    - name: run version
+      ios_command:
+         commands: show version
+      register: sh_ver
+
+
+    - name: run show version for 891
+      ios_command:
+         commands:
+          - show version
+      when: "'89' in sh_ver.stdout[0]"

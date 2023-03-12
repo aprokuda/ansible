@@ -1,0 +1,27 @@
+---
+
+- name: RUN
+  hosts: routers
+ 
+
+  tasks:
+    
+    - name: run sh
+      ios_command:
+         commands: show int description
+      register: sh_ip
+
+
+    - name: run show ip int brief
+      ios_command:
+         commands:
+          - show int description
+       #  - show ip int brief | i FastEthernet8
+      #   - show ip int brief | i GigabitEthernet0
+      register: ip_brief_result 
+      when: "'Fa8                            up             up' in sh_ip.stdout_lines[10]"
+   #  when: "'Gi0                            up             up' in sh_ip.stdout[0]"
+
+    - name: Debug registered var
+      debug:
+        var: ip_brief_result.stdout_lines[10]

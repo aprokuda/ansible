@@ -1,0 +1,12 @@
+---
+
+- name: save config
+  hosts: switch
+  
+  tasks:
+
+    - name: save config
+      ios_command:
+         commands:
+           - write
+

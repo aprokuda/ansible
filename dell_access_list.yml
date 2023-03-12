@@ -1,0 +1,30 @@
+---
+
+- name: Run cfg commands on routers
+  hosts: cisco
+
+  tasks:
+    
+    - name: Facts
+      ios_facts:
+         gather_subset:
+           - interfaces
+    
+   # - name: Debug
+    #  debug: var=ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address']
+ 
+    - name: Config del old access-list
+      ios_config:
+         parents:
+           - ip access-list extended FIREWALL-ISP2
+         lines:
+           - no permit udp host 89.40.48.114 host {{ ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address'] }} eq isakmp
+           - no permit esp host 89.40.48.114 host {{ ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address'] }}
+           - no permit udp host 89.40.48.114 host {{ ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address'] }} eq non500-isakmp
+           - no permit tcp host 89.40.48.114 host {{ ansible_net_interfaces['GigabitEthernet8']['ipv4'][0]['address'] }} eq 22
+
+    #- name: save config
+     # ios_command:
+      #   commands:
+       #    - write
+
